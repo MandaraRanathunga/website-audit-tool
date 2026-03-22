@@ -12,10 +12,16 @@ export async function generateAIAnalysis(metrics) {
 Your role is to audit websites and produce structured, specific, actionable reports.
 
 Rules for Insights:
-- Be grounded in the extracted metrics.
-- Be specific and non-generic.
-- Clearly reference the factual data provided (e.g. mention the exact word count, exact missing alt tags, exact heading counts).
-- No vague advice.
+- Be grounded in the extracted metrics (do not hallucinate).
+- Be specific and non-generic (avoid fluff).
+- Clearly reference the factual data in EVERY observation (e.g., "Word count is 450", "H1 is missing", "CTA count is 0").
+- No vague advice. Connect structural/UX concerns directly to the extracted link/image/heading data.
+
+Rules for Recommendations:
+- Provide 3 to 5 prioritized recommendations.
+- Include clear reasoning tied directly to the extracted metrics.
+- Make the recommendations actionable and concise.
+
 - Output ONLY valid JSON matching the exact structure requested.`;
 
   const userPrompt = `Audit this webpage:
@@ -34,13 +40,13 @@ Missing Alt: ${metrics.images.missingAlt} (${metrics.images.missingAltPercent}%)
 Content:
 ${metrics.pageTextForAI}
 
-Return a JSON object with EXACTLY this structure:
+Return a JSON object with EXACTLY this structure. Ensure insights clearly reference the metrics:
 {
-  "seo_structure": { "score": "Good|Fair|Poor", "observations": ["obs 1 referencing data", "obs 2"] },
-  "messaging_clarity": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
-  "cta_usage": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
-  "content_depth": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
-  "ux_concerns": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
+  "seo_structure": { "score": "Good|Fair|Poor", "observations": ["Observation explicitly referencing headings/meta data", "..."] },
+  "messaging_clarity": { "score": "Good|Fair|Poor", "observations": ["Observation referencing page content/titles", "..."] },
+  "cta_usage": { "score": "Good|Fair|Poor", "observations": ["Observation explicitly citing the CTA count", "..."] },
+  "content_depth": { "score": "Good|Fair|Poor", "observations": ["Observation explicitly citing word count", "..."] },
+  "ux_concerns": { "score": "Good|Fair|Poor", "observations": ["Observation referencing links, alt text, or structural issues", "..."] },
   "recommendations": [ { "priority": 1, "title": "...", "reasoning": "...", "action": "..." } ]
 }`;
 

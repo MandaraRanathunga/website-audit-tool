@@ -53,34 +53,36 @@ export default function App() {
   ];
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       
-      {/* Header */}
-      <header style={{ marginBottom: 48 }}>
-        <div style={{
-          display: "inline-block",
-          background: "linear-gradient(135deg, var(--accent), var(--accent2))",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          fontSize: 13,
-          fontWeight: 700,
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          marginBottom: 12,
-        }}>
-          EIGHT25MEDIA · AI Audit Tool
+      {/* Top Header */}
+      <header style={{ padding: "20px 40px", background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontWeight: 700, color: "var(--accent)", fontSize: "18px", letterSpacing: "0.05em" }}>
+            EIGHT25MEDIA
+          </div>
+          <div style={{ fontWeight: 600, color: "var(--text-muted)", fontSize: "14px", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+            · AI Audit Tool
+          </div>
         </div>
+      </header>
 
-        <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800 }}>
+      <main style={{ flex: 1, maxWidth: 960, margin: "0 auto", padding: "40px 20px", width: "100%" }}>
+        {/* Hero Section */}
+        <div style={{ marginBottom: 48, textAlign: "center" }}>
+
+        <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 800, margin: "0 0 16px 0", color: "var(--text)" }}>
           Website Audit
         </h1>
 
-        <p style={{ marginTop: 8, maxWidth: 480 }}>
+        <p style={{ margin: "0 auto", maxWidth: 540, color: "var(--text-muted)", fontSize: "18px", lineHeight: 1.6 }}>
           Enter a URL to extract metrics and generate AI-powered insights.
         </p>
-      </header>
+        </div>
 
-      <AuditForm onSubmit={handleAudit} loading={loading} />
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        <AuditForm onSubmit={handleAudit} loading={loading} />
+      </div>
 
       {/* Error */}
       {error && (
@@ -98,27 +100,39 @@ export default function App() {
 
       {/* Results */}
       {result && (
-        <div style={{ marginTop: 40 }}>
+        <div style={{ marginTop: 48 }}>
 
           {/* URL */}
           <div style={{
-            marginBottom: 20,
-            padding: "10px",
-            border: "1px solid #333",
-            borderRadius: 8,
+            marginBottom: 32,
+            padding: "16px 24px",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: 12,
+            textAlign: "center",
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)"
           }}>
-            <strong>Audited:</strong> {result.metrics?.url}
+            <span style={{ color: "var(--text-muted)", marginRight: 8 }}>Audited:</span>
+            <strong style={{ color: "var(--accent)", fontSize: "16px", wordBreak: "break-all" }}>{result.metrics?.url}</strong>
           </div>
 
           {/* Tabs */}
-          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 12, marginBottom: 40 }}>
             {tabs.map(t => (
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
                 style={{
-                  padding: "8px 12px",
-                  borderBottom: activeTab === t.id ? "2px solid blue" : "none",
+                  padding: "10px 20px",
+                  borderRadius: "30px",
+                  border: activeTab === t.id ? "1px solid transparent" : "1px solid var(--border)",
+                  background: activeTab === t.id ? "linear-gradient(135deg, var(--accent), var(--accent2))" : "var(--surface)",
+                  color: activeTab === t.id ? "#fff" : "var(--text-muted)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  boxShadow: activeTab === t.id ? "0 4px 6px -1px rgba(2, 132, 199, 0.3)" : "none"
                 }}
               >
                 {t.label}
@@ -136,9 +150,7 @@ export default function App() {
           )}
 
           {activeTab === "recommendations" && (
-            <RecommendationsPanel
-              recommendations={result.aiReport?.recommendations || []} // ✅ FIXED
-            />
+            <RecommendationsPanel insights={result.aiReport} />
           )}
 
           {activeTab === "logs" && (
@@ -146,6 +158,35 @@ export default function App() {
           )}
         </div>
       )}
+      </main>
+
+      {/* Footer */}
+      <footer style={{
+        background: "var(--surface)",
+        borderTop: "1px solid var(--border)",
+        padding: "24px 40px",
+      }}>
+        <div style={{
+          maxWidth: 960,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "end",
+          fontSize: "13px",
+          color: "var(--text-muted)",
+          lineHeight: 1.6
+        }}>
+          <div style={{ textAlign: "left" }}>
+            Developed by Mandara Ranathunga
+          </div>
+          <div style={{ textAlign: "center" }}>
+            All rights reserved.
+          </div>
+          <div style={{ textAlign: "right", fontWeight: 600 }}>
+            EIGHT25MEDIA<br />AI Audit Tool
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

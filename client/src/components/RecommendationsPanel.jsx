@@ -1,4 +1,20 @@
-export default function RecommendationsPanel({ recommendations }) {
+export default function RecommendationsPanel({ insights }) {
+  if (!insights) return null;
+
+  // If the AI or backend returns an error, display it clearly
+  if (insights.error) {
+    return (
+      <div style={{ padding: "20px", background: "#fee2e2", color: "#991b1b", borderRadius: "8px", border: "1px solid #f87171" }}>
+        <strong>⚠️ AI Analysis Failed:</strong> {insights.error}
+        {insights.details && <div style={{ marginTop: "8px", fontSize: "14px" }}>{insights.details}</div>}
+      </div>
+    );
+  }
+
+  // Handle potential AI nesting (e.g., if it wraps the output in an "insights" object)
+  const targetData = insights.recommendations ? insights : (insights.insights || insights);
+  const recommendations = targetData.recommendations || targetData.Recommendations || [];
+
   if (!recommendations || recommendations.length === 0) {
     return <p>No recommendations available.</p>;
   }

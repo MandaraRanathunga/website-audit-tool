@@ -1,4 +1,16 @@
 export default function InsightsPanel({ insights }) {
+  if (!insights) return null;
+
+  // If the AI or backend returns an error, display it clearly
+  if (insights.error) {
+    return (
+      <div style={{ padding: "20px", background: "#fee2e2", color: "#991b1b", borderRadius: "8px", border: "1px solid #f87171" }}>
+        <strong>⚠️ AI Analysis Failed:</strong> {insights.error}
+        {insights.details && <div style={{ marginTop: "8px", fontSize: "14px" }}>{insights.details}</div>}
+      </div>
+    );
+  }
+
   const categories = [
     { key: "seo_structure", label: "SEO Structure" },
     { key: "messaging_clarity", label: "Messaging Clarity" },
@@ -6,6 +18,9 @@ export default function InsightsPanel({ insights }) {
     { key: "content_depth", label: "Content Depth" },
     { key: "ux_concerns", label: "UX Concerns" },
   ];
+  
+  // Handle potential AI nesting (e.g., if it wraps the output in an "insights" object)
+  const targetData = insights.seo_structure ? insights : (insights.insights || insights);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -14,7 +29,7 @@ export default function InsightsPanel({ insights }) {
       </p>
 
       {categories.map(({ key, label }) => {
-        const data = insights[key];
+        const data = targetData[key];
         if (!data) return null;
         
         return (

@@ -1,13 +1,13 @@
 :root {
-  --accent: #3b82f6;
-  --accent2: #8b5cf6;
+  --accent: #0284c7; /* Professional Blue */
+  --accent2: #059669; /* Professional Emerald Green */
   --surface: #ffffff;
-  --border: #e2e8f0;
+  --border: #cbd5e1;
   --danger: #ef4444;
   --warn: #f59e0b;
   --text: #0f172a;
   --text-muted: #64748b;
-  --font-display: system-ui, -apple-system, sans-serif;
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, monospace;
 }
 

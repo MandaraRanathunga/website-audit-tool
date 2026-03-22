@@ -45,6 +45,7 @@ app.post("/api/audit", async (req, res) => {
     res.json({
       success: true,
       metrics,
+      insights: aiReport,
       aiReport,
       promptLog,
     });
