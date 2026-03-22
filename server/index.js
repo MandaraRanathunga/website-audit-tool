@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { scrapeMetrics } from "./scraper.js";
 import { generateAIAnalysis } from "./aiAnalysis.js";
+import { savePromptLog } from "./promptLogger.js";
 
 const app = express();
 app.use(cors());
@@ -18,9 +19,19 @@ app.post("/api/audit", async (req, res) => {
     const metrics = await scrapeMetrics(url);
 
     let aiReport = null;
+    let promptLog = null;
 
     try {
-      aiReport = await generateAIAnalysis(metrics);
+      const aiResult = await generateAIAnalysis(metrics);
+      aiReport = aiResult.parsed;
+      
+      const logFile = savePromptLog(url, metrics, aiResult);
+      promptLog = {
+        systemPrompt: aiResult.systemPrompt,
+        userPrompt: aiResult.userPrompt,
+        rawOutput: aiResult.rawOutput,
+        logFile,
+      };
     } catch (aiError) {
       console.error("AI failed:", aiError.message);
 
@@ -35,6 +46,7 @@ app.post("/api/audit", async (req, res) => {
       success: true,
       metrics,
       aiReport,
+      promptLog,
     });
 
   } catch (err) {

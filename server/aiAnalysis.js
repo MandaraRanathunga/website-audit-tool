@@ -39,7 +39,7 @@ seo_structure, messaging_clarity, cta_usage, content_depth, ux_concerns, recomme
   try {
     const response = await client.responses.create({
    model: "gpt-4.1-mini",
-   response_format: { type: "json_object" }, 
+   text: { format: { type: "json_object" } }, 
    input: [
     { role: "system", content: systemPrompt },
     { role: "user", content: userPrompt },
@@ -73,9 +73,14 @@ seo_structure, messaging_clarity, cta_usage, content_depth, ux_concerns, recomme
   };
 }
 
-    return parsed;
+    return {
+      parsed,
+      systemPrompt,
+      userPrompt,
+      rawOutput: raw,
+    };
   } catch (err) {
     console.error("AI Error:", err.message);
-    throw new Error("AI analysis failed");
+    throw new Error(err.message);
   }
 }
