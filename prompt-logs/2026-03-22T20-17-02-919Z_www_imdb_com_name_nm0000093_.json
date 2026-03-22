@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-03-22T20:17:02.919Z",
+  "url": "https://www.imdb.com/name/nm0000093/",
+  "metrics_input": {
+    "wordCount": 0,
+    "headings": {
+      "h1": 0,
+      "h2": 0,
+      "h3": 0
+    },
+    "metaTitle": null,
+    "metaDescription": null,
+    "ctaCount": 0,
+    "links": {
+      "internal": 0,
+      "external": 0
+    },
+    "images": {
+      "total": 0,
+      "missingAlt": 0,
+      "missingAltPercent": 0
+    }
+  },
+  "prompt_log": {
+    "system_prompt": "You are a senior web strategist and SEO specialist at a high-performing marketing agency. \nYour role is to audit websites and produce structured, specific, actionable reports.\n\nRules for Insights:\n- Be grounded in the extracted metrics (do not hallucinate).\n- Be specific and non-generic (avoid fluff).\n- Clearly reference the factual data in EVERY observation (e.g., \"Word count is 450\", \"H1 is missing\", \"CTA count is 0\").\n- No vague advice. Connect structural/UX concerns directly to the extracted link/image/heading data.\n\nRules for Recommendations:\n- Provide 3 to 5 prioritized recommendations.\n- Include clear reasoning tied directly to the extracted metrics.\n- Make the recommendations actionable and concise.\n\n- Output ONLY valid JSON matching the exact structure requested.",
+    "user_prompt": "Audit this webpage:\n\nURL: https://www.imdb.com/name/nm0000093/\nWord Count: 0\nHeadings: H1=0, H2=0, H3=0\nMeta Title: MISSING\nMeta Description: MISSING\nCTA Count: 0\nInternal Links: 0\nExternal Links: 0\nImages: 0\nMissing Alt: 0 (0%)\n\nContent:\n\n\nReturn a JSON object with EXACTLY this structure. Ensure insights clearly reference the metrics:\n{\n  \"seo_structure\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation explicitly referencing headings/meta data\", \"...\"] },\n  \"messaging_clarity\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation referencing page content/titles\", \"...\"] },\n  \"cta_usage\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation explicitly citing the CTA count\", \"...\"] },\n  \"content_depth\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation explicitly citing word count\", \"...\"] },\n  \"ux_concerns\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation referencing links, alt text, or structural issues\", \"...\"] },\n  \"recommendations\": [ { \"priority\": 1, \"title\": \"...\", \"reasoning\": \"...\", \"action\": \"...\" } ]\n}",
+    "raw_model_output": "API Error: 401 Incorrect API key provided: sk-proj-********************************************************************************************************************************************************-qUA. You can find your API key at https://platform.openai.com/account/api-keys."
+  },
+  "parsed_output": {
+    "error": "AI analysis failed",
+    "details": "401 Incorrect API key provided: sk-proj-********************************************************************************************************************************************************-qUA. You can find your API key at https://platform.openai.com/account/api-keys."
+  }
+}

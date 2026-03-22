@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-03-22T20:16:35.778Z",
+  "url": "https://search.brave.com/search?q=movies+brad+pit",
+  "metrics_input": {
+    "wordCount": 378,
+    "headings": {
+      "h1": 0,
+      "h2": 0,
+      "h3": 0
+    },
+    "metaTitle": "movies brad pit - Brave Search",
+    "metaDescription": "Search the Web. Privately. Truly useful results, AI-powered answers, & more. All from an independent index. No profiling, no bias, no Big Tech.",
+    "ctaCount": 4,
+    "links": {
+      "internal": 35,
+      "external": 88
+    },
+    "images": {
+      "total": 99,
+      "missingAlt": 53,
+      "missingAltPercent": 54
+    }
+  },
+  "prompt_log": {
+    "system_prompt": "You are a senior web strategist and SEO specialist at a high-performing marketing agency. \nYour role is to audit websites and produce structured, specific, actionable reports.\n\nRules for Insights:\n- Be grounded in the extracted metrics (do not hallucinate).\n- Be specific and non-generic (avoid fluff).\n- Clearly reference the factual data in EVERY observation (e.g., \"Word count is 450\", \"H1 is missing\", \"CTA count is 0\").\n- No vague advice. Connect structural/UX concerns directly to the extracted link/image/heading data.\n\nRules for Recommendations:\n- Provide 3 to 5 prioritized recommendations.\n- Include clear reasoning tied directly to the extracted metrics.\n- Make the recommendations actionable and concise.\n\n- Output ONLY valid JSON matching the exact structure requested.",
+    "user_prompt": "Audit this webpage:\n\nURL: https://search.brave.com/search?q=movies+brad+pit\nWord Count: 378\nHeadings: H1=0, H2=0, H3=0\nMeta Title: movies brad pit - Brave Search\nMeta Description: Search the Web. Privately. Truly useful results, AI-powered answers, & more. All from an independent index. No profiling, no bias, no Big Tech.\nCTA Count: 4\nInternal Links: 35\nExternal Links: 88\nImages: 99\nMissing Alt: 53 (54%)\n\nContent:\nAsk All Images News Videos Goggles Brad Pitt has starred in a wide range of critically acclaimed and commercially successful films across several decades. His career began with breakout roles in Thelma & Louise (1991) and A River Runs Through It (1992), followed by major performances in Interview with the Vampire (1994), Legends of the Fall (1994), and Seven (1995), which earned him his first Academy Award nomination. He gained cult status for his role as Tyler Durden in Fight Club (1999), a performance that redefined modern antihero cinema. Pitt’s career saw a major commercial and critical resurgence with the Ocean’s trilogy (Ocean’s Eleven, 2001; Ocean’s Twelve, 2004; Ocean’s Thirteen, 2007), and he solidified his leading-man status with roles in Mr. & Mrs. Smith (2005), Troy (2004), and World War Z (2013). His most recent acclaimed work includes Cliff Booth in Once Upon a Time in Hollywood (2019), for which he won the Academy Award, Golden Globe, and BAFTA for Best Supporting Actor. He also starred in Bullet Train (2022), The Big Short (2015), and F1 (2025), the latter being an Apple Original Films release. As a producer, Pitt co-founded Plan B Entertainment and earned an Academy Award for Best Picture for producing 12 Years a Slave (2013). He also produced The Big Short (2015) and Wolfs (2024), both of which were released under Apple Original Films. Notable films from his filmography include: Inglourious Basterds (2009) Inglourious Basterds (2009) The Curious Case of Benjamin Button (2008) The Curious Case of Benjamin Button (2008) Moneyball (2011) Moneyball (2011) Babel (2006) Babel (2006) The Assassination of Jesse James by the Coward Robert Ford (2007) The Assassination of Jesse James by the Coward Robert Ford (2007) Ad Astra (2019) Ad Astra (2019) Beetlejuice Beetlejuice (2024) Beetlejuice Beetlejuice (2024) Nickel Boys (2024) Nickel Boys (2024) Pitt continues to be a major force in Hollywood, both as an actor and a producer, with a legacy defined by diverse, complex roles and impactful storytelling. Videos Here are my top 5 personal favourite his movies that I rewatch the most. Interview With The Vampire (1994) Interview With The Vampire (1994) Seven (1995) Seven (1995) Fight Club (1999) Fight Club (1999) Snatch (2000) Snatch (2000) World War Z (2013) World War Z (2013) Resources Products Policies\n\nReturn a JSON object with EXACTLY this structure. Ensure insights clearly reference the metrics:\n{\n  \"seo_structure\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation explicitly referencing headings/meta data\", \"...\"] },\n  \"messaging_clarity\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation referencing page content/titles\", \"...\"] },\n  \"cta_usage\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation explicitly citing the CTA count\", \"...\"] },\n  \"content_depth\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation explicitly citing word count\", \"...\"] },\n  \"ux_concerns\": { \"score\": \"Good|Fair|Poor\", \"observations\": [\"Observation referencing links, alt text, or structural issues\", \"...\"] },\n  \"recommendations\": [ { \"priority\": 1, \"title\": \"...\", \"reasoning\": \"...\", \"action\": \"...\" } ]\n}",
+    "raw_model_output": "API Error: 401 Incorrect API key provided: sk-proj-********************************************************************************************************************************************************-qUA. You can find your API key at https://platform.openai.com/account/api-keys."
+  },
+  "parsed_output": {
+    "error": "AI analysis failed",
+    "details": "401 Incorrect API key provided: sk-proj-********************************************************************************************************************************************************-qUA. You can find your API key at https://platform.openai.com/account/api-keys."
+  }
+}
