@@ -11,11 +11,12 @@ export async function generateAIAnalysis(metrics) {
   const systemPrompt = `You are a senior web strategist and SEO specialist at a high-performing marketing agency. 
 Your role is to audit websites and produce structured, specific, actionable reports.
 
-Rules:
-- Use ONLY provided metrics
-- Be specific and reference numbers
-- No vague advice
-- Output ONLY JSON`;
+Rules for Insights:
+- Be grounded in the extracted metrics.
+- Be specific and non-generic.
+- Clearly reference the factual data provided (e.g. mention the exact word count, exact missing alt tags, exact heading counts).
+- No vague advice.
+- Output ONLY valid JSON matching the exact structure requested.`;
 
   const userPrompt = `Audit this webpage:
 
@@ -33,12 +34,19 @@ Missing Alt: ${metrics.images.missingAlt} (${metrics.images.missingAltPercent}%)
 Content:
 ${metrics.pageTextForAI}
 
-Return JSON with:
-seo_structure, messaging_clarity, cta_usage, content_depth, ux_concerns, recommendations`;
+Return a JSON object with EXACTLY this structure:
+{
+  "seo_structure": { "score": "Good|Fair|Poor", "observations": ["obs 1 referencing data", "obs 2"] },
+  "messaging_clarity": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
+  "cta_usage": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
+  "content_depth": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
+  "ux_concerns": { "score": "Good|Fair|Poor", "observations": ["obs 1", "obs 2"] },
+  "recommendations": [ { "priority": 1, "title": "...", "reasoning": "...", "action": "..." } ]
+}`;
 
   try {
     const response = await client.responses.create({
-   model: "gpt-4.1-mini",
+   model: "gpt-4o-mini",
    text: { format: { type: "json_object" } }, 
    input: [
     { role: "system", content: systemPrompt },
@@ -81,6 +89,12 @@ seo_structure, messaging_clarity, cta_usage, content_depth, ux_concerns, recomme
     };
   } catch (err) {
     console.error("AI Error:", err.message);
-    throw new Error(err.message);
+    // Return fallback instead of throwing so prompt logs always populate
+    return {
+      parsed: { error: "AI analysis failed", details: err.message },
+      systemPrompt,
+      userPrompt,
+      rawOutput: `API Error: ${err.message}`,
+    };
   }
 }
