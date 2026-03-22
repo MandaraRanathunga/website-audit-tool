@@ -22,10 +22,22 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Audit failed");
+
+      let data;
+
+      try {
+        data = await res.json(); // ✅ FIXED
+      } catch (err) {
+        throw new Error("Server returned invalid JSON");
+      }
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Audit failed");
+      }
+
       setResult(data);
       setActiveTab("metrics");
+
     } catch (e) {
       setError(e.message);
     } finally {
@@ -42,6 +54,7 @@ export default function App() {
 
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
+      
       {/* Header */}
       <header style={{ marginBottom: 48 }}>
         <div style={{
@@ -49,7 +62,6 @@ export default function App() {
           background: "linear-gradient(135deg, var(--accent), var(--accent2))",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
-          fontFamily: "var(--font-display)",
           fontSize: 13,
           fontWeight: 700,
           letterSpacing: "0.15em",
@@ -58,81 +70,80 @@ export default function App() {
         }}>
           EIGHT25MEDIA · AI Audit Tool
         </div>
-        <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, color: "var(--text)" }}>
+
+        <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800 }}>
           Website Audit
         </h1>
-        <p style={{ color: "var(--text-muted)", marginTop: 8, maxWidth: 480 }}>
-          Enter a URL to extract factual metrics and generate AI-powered SEO, messaging, and UX insights.
+
+        <p style={{ marginTop: 8, maxWidth: 480 }}>
+          Enter a URL to extract metrics and generate AI-powered insights.
         </p>
       </header>
 
       <AuditForm onSubmit={handleAudit} loading={loading} />
 
+      {/* Error */}
       {error && (
         <div style={{
           marginTop: 24,
-          padding: "14px 18px",
+          padding: "14px",
           background: "#1f0a0a",
-          border: "1px solid var(--danger)",
+          border: "1px solid red",
           borderRadius: 8,
-          color: "var(--danger)",
-          fontFamily: "var(--font-mono)",
-          fontSize: 13,
+          color: "red",
         }}>
           ⚠ {error}
         </div>
       )}
 
+      {/* Results */}
       {result && (
         <div style={{ marginTop: 40 }}>
-          {/* URL badge */}
+
+          {/* URL */}
           <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            marginBottom: 28,
-            padding: "10px 16px",
-            background: "var(--surface)",
-            border: "1px solid var(--border)",
+            marginBottom: 20,
+            padding: "10px",
+            border: "1px solid #333",
             borderRadius: 8,
           }}>
-            <span style={{ color: "var(--accent)", fontSize: 12, fontFamily: "var(--font-mono)" }}>AUDITED</span>
-            <span style={{ color: "var(--text-muted)", fontSize: 13, fontFamily: "var(--font-mono)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {result.url}
-            </span>
+            <strong>Audited:</strong> {result.metrics?.url}
           </div>
 
           {/* Tabs */}
-          <div style={{
-            display: "flex",
-            gap: 4,
-            marginBottom: 24,
-            borderBottom: "1px solid var(--border)",
-            paddingBottom: 0,
-          }}>
+          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
             {tabs.map(t => (
-              <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-                padding: "10px 18px",
-                background: "none",
-                border: "none",
-                borderBottom: activeTab === t.id ? "2px solid var(--accent)" : "2px solid transparent",
-                color: activeTab === t.id ? "var(--accent)" : "var(--text-muted)",
-                fontFamily: "var(--font-display)",
-                fontWeight: 600,
-                fontSize: 13,
-                cursor: "pointer",
-                letterSpacing: "0.03em",
-                transition: "all 0.15s",
-              }}>
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                style={{
+                  padding: "8px 12px",
+                  borderBottom: activeTab === t.id ? "2px solid blue" : "none",
+                }}
+              >
                 {t.label}
               </button>
             ))}
           </div>
 
-          {activeTab === "metrics" && <MetricsPanel metrics={result.metrics} />}
-          {activeTab === "insights" && <InsightsPanel insights={result.insights} />}
-          {activeTab === "recommendations" && <RecommendationsPanel recommendations={result.insights.recommendations} />}
-          {activeTab === "logs" && <PromptLog log={result.promptLog} />}
+          {/* Panels */}
+          {activeTab === "metrics" && (
+            <MetricsPanel metrics={result.metrics} />
+          )}
+
+          {activeTab === "insights" && (
+            <InsightsPanel insights={result.aiReport} /> // ✅ FIXED
+          )}
+
+          {activeTab === "recommendations" && (
+            <RecommendationsPanel
+              recommendations={result.aiReport?.recommendations || []} // ✅ FIXED
+            />
+          )}
+
+          {activeTab === "logs" && (
+            <PromptLog log={result.promptLog || {}} />
+          )}
         </div>
       )}
     </div>
