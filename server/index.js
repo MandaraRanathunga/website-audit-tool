@@ -1,30 +1,26 @@
-import express from "express";
-import cors from "cors";
 import { scrapeMetrics } from "./scraper.js";
 import { generateAIAnalysis } from "./aiAnalysis.js";
 import { savePromptLog } from "./promptLogger.js";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-app.post("/api/audit", async (req, res) => {
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
   try {
     const { url } = req.body;
-
-    if (!url) {
-      return res.status(400).json({ error: "URL is required" });
-    }
+    if (!url) return res.status(400).json({ error: "URL is required" });
 
     const metrics = await scrapeMetrics(url);
-
     let aiReport = null;
     let promptLog = null;
 
     try {
       const aiResult = await generateAIAnalysis(metrics);
       aiReport = aiResult.parsed;
-      
       const logFile = savePromptLog(url, metrics, aiResult);
       promptLog = {
         systemPrompt: aiResult.systemPrompt,
@@ -33,35 +29,11 @@ app.post("/api/audit", async (req, res) => {
         logFile,
       };
     } catch (aiError) {
-      console.error("AI failed:", aiError.message);
-
-      // fallback so frontend doesn't crash
-      aiReport = {
-        error: "AI analysis failed",
-        details: aiError.message,
-      };
+      aiReport = { error: "AI analysis failed", details: aiError.message };
     }
 
-    res.json({
-      success: true,
-      metrics,
-      insights: aiReport,
-      aiReport,
-      promptLog,
-    });
-
+    res.json({ success: true, metrics, insights: aiReport, aiReport, promptLog });
   } catch (err) {
-    console.error("Server error:", err.message);
-
-    res.status(500).json({
-      success: false,
-      error: err.message || "Audit failed",
-    });
+    res.status(500).json({ success: false, error: err.message || "Audit failed" });
   }
-});
-
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+}
