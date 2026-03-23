@@ -1,20 +1,28 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 import { scrapeMetrics } from "./scraper.js";
 import { generateAIAnalysis } from "./aiAnalysis.js";
 import { savePromptLog } from "./promptLogger.js";
 
-export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+dotenv.config();
 
-  if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+const app = express();
+const PORT = process.env.PORT || 3001;
 
+app.use(cors());
+app.use(express.json());
+
+app.post("/api/audit", async (req, res) => {
   try {
     const { url } = req.body;
     if (!url) return res.status(400).json({ error: "URL is required" });
 
+    console.log(`🔍 Auditing: ${url}`);
+
     const metrics = await scrapeMetrics(url);
+    console.log("✅ Metrics scraped");
+
     let aiReport = null;
     let promptLog = null;
 
@@ -28,12 +36,20 @@ export default async function handler(req, res) {
         rawOutput: aiResult.rawOutput,
         logFile,
       };
+      console.log("✅ AI analysis complete");
     } catch (aiError) {
+      console.error("❌ AI error:", aiError.message);
       aiReport = { error: "AI analysis failed", details: aiError.message };
     }
 
-    res.json({ success: true, metrics, insights: aiReport, aiReport, promptLog });
+    res.json({ success: true, metrics, aiReport, promptLog });
+
   } catch (err) {
+    console.error("❌ Audit error:", err.message);
     res.status(500).json({ success: false, error: err.message || "Audit failed" });
   }
-}
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
