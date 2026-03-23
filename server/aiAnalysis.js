@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
-
 dotenv.config();
 
 const client = new OpenAI({
@@ -21,8 +20,7 @@ Rules for Recommendations:
 - Provide 3 to 5 prioritized recommendations.
 - Include clear reasoning tied directly to the extracted metrics.
 - Make the recommendations actionable and concise.
-
-- Output ONLY valid JSON matching the exact structure requested.`;
+- Output ONLY valid JSON matching the exact structure requested. No markdown, no code fences, no explanation.`;
 
   const userPrompt = `Audit this webpage:
 
@@ -42,50 +40,44 @@ ${metrics.pageTextForAI}
 
 Return a JSON object with EXACTLY this structure. Ensure insights clearly reference the metrics:
 {
-  "seo_structure": { "score": "Good|Fair|Poor", "observations": ["Observation explicitly referencing headings/meta data", "..."] },
-  "messaging_clarity": { "score": "Good|Fair|Poor", "observations": ["Observation referencing page content/titles", "..."] },
-  "cta_usage": { "score": "Good|Fair|Poor", "observations": ["Observation explicitly citing the CTA count", "..."] },
-  "content_depth": { "score": "Good|Fair|Poor", "observations": ["Observation explicitly citing word count", "..."] },
-  "ux_concerns": { "score": "Good|Fair|Poor", "observations": ["Observation referencing links, alt text, or structural issues", "..."] },
-  "recommendations": [ { "priority": 1, "title": "...", "reasoning": "...", "action": "..." } ]
+  "seo_structure": { "score": "Good|Fair|Poor", "observations": ["..."] },
+  "messaging_clarity": { "score": "Good|Fair|Poor", "observations": ["..."] },
+  "cta_usage": { "score": "Good|Fair|Poor", "observations": ["..."] },
+  "content_depth": { "score": "Good|Fair|Poor", "observations": ["..."] },
+  "ux_concerns": { "score": "Good|Fair|Poor", "observations": ["..."] },
+  "recommendations": [
+    { "priority": 1, "title": "...", "reasoning": "...", "action": "..." }
+  ]
 }`;
 
   try {
-    const response = await client.responses.create({
-   model: "gpt-4o-mini",
-   text: { format: { type: "json_object" } }, 
-   input: [
-    { role: "system", content: systemPrompt },
-    { role: "user", content: userPrompt },
-   ],
-   max_output_tokens: 2000,
-   });
+    // ✅ FIX: use chat.completions.create, not responses.create
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      response_format: { type: "json_object" }, // ✅ correct field for chat completions
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      max_tokens: 2000,
+    });
 
-    let raw = "";
-
-    if (response.output_text) {
-    raw = response.output_text;
-    } else {
-    raw = response.output
-    ?.map(o => o.content?.map(c => c.text).join(""))
-    .join("") || "";
-   }
+    // ✅ FIX: correct path to response text for chat completions
+    const raw = response.choices[0].message.content || "";
 
     const cleaned = raw.replace(/```json|```/g, "").trim();
+
     let parsed;
-
     try {
-     parsed = JSON.parse(cleaned);
+      parsed = JSON.parse(cleaned);
     } catch (err) {
-     console.error("❌ AI returned invalid JSON:");
-     console.error(raw);
-
-    // fallback response instead of crashing
-    parsed = {
-    error: "Invalid JSON from AI",
-    rawOutput: raw,
-  };
-}
+      console.error("❌ AI returned invalid JSON:");
+      console.error(raw);
+      parsed = {
+        error: "Invalid JSON from AI",
+        rawOutput: raw,
+      };
+    }
 
     return {
       parsed,
@@ -95,7 +87,6 @@ Return a JSON object with EXACTLY this structure. Ensure insights clearly refere
     };
   } catch (err) {
     console.error("AI Error:", err.message);
-    // Return fallback instead of throwing so prompt logs always populate
     return {
       parsed: { error: "AI analysis failed", details: err.message },
       systemPrompt,
